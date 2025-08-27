@@ -1,0 +1,42 @@
+{% comment %}
+  Este snippet permite mostrar una lista de productos desde un metacampo personalizado.
+  El metacampo 'custom.lista_de_productos' debe contener referencias a productos.
+{% endcomment %}
+
+{% if product.metafields.custom.lista_de_productos %}
+  <div class="productos-relacionados">
+    <h3 class="productos-relacionados-titulo">Productos relacionados</h3>
+    <div class="productos-relacionados-grid">
+      {% for item in product.metafields.custom.lista_de_productos.value %}
+        {% assign current_product = item %}
+        <div class="producto-item">
+          <a href="{{ current_product.url }}" class="producto-link">
+            <div class="producto-imagen">
+              {% if current_product.featured_image %}
+                <img 
+                  src="{{ current_product.featured_image | image_url: width: 300, height: 300, crop: 'center' }}" 
+                  alt="{{ current_product.title | escape }}"
+                  loading="lazy"
+                  width="300"
+                  height="300">
+              {% else %}
+                {{ 'product-1' | placeholder_svg_tag: 'producto-imagen-placeholder' }}
+              {% endif %}
+            </div>
+            <div class="producto-info">
+              <h4 class="producto-titulo">{{ current_product.title }}</h4>
+              <div class="producto-precio">
+                {% if current_product.compare_at_price > current_product.price %}
+                  <span class="precio-original">{{ current_product.compare_at_price | money }}</span>
+                  <span class="precio-actual">{{ current_product.price | money }}</span>
+                {% else %}
+                  <span class="precio-actual">{{ current_product.price | money }}</span>
+                {% endif %}
+              </div>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
